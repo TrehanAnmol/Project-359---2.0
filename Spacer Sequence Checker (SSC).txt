@@ -1,0 +1,66 @@
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Hello. My name is Anmol Trehan.
+# This file contains the piece of code that I have utilized as part of my Honours dissertation Project (Project 359 - 2.0), named Spacer Sequence Checker (SSC). 
+# This Code can confirm if the respective input spacer sequence can generate a new restriction site identical to that of the other 4 sites (Site-A, Site-X, Site-Y & Site-B) in the library of 64 Building Blocks.
+# An ideal spacer sequence will not let the occurance of the other 4 designated Type-II restriction sites (Site-A, Site-X, Site-Y & Site-B) take place within the BB library.
+# All the Sequences in the blank area have to be filled in CAPITAL and in a left to right manner. That means that the Topstrand sequences have to be inputed in a 5' to 3' manner (i.e. from left to right) and the bottomstrands have to be inputed from a 3' to 5'  manner (i.e. from left to right).
+# After filling all the respective sequences in the blank areas, press ENTER.
+# An output stating 'Following are repeated in list' will be displaced with all the top and bottom strands of the restriction sites that repeat more than once in the 64 BB library. Even a single repeatition (result) will generate a defective Building Block library.
+# P.S. - To make the checking process easier, Make all the 4 designated Type-II restriction sites sequences (Site-A, Site-X, Site-Y & Site-B) (Top & Bottom) constant within the code by Replace the input command in the code with the sequence of the selected Type-II restriction sites as explained below:
+# For example: if BsaI (5' GGTCTC 3') is the Restriction enzyme used at Site-A, replace the input code "Site_A_Top = input('Enter A-Site Topstrand: ')" with "Site_A_Top = 'GGTCTC'" and replace the code "Site_A_Bottom = input('Enter A-Site Bottomstrand: ')" with "Site_A_Top = 'CCAGAG'".
+# Do the same for all the other 3 restriction site sequences (for both Top & Bottom strands) to make the 4 designated restriction site sequences constant. Making the spacer sequences (for X and Y) variables. 
+# Note for further improvement: A code can be written to generate the complementary strand of the top 5' to 3' sequence which will save time from repeatedly inputting the bottom strand of the sequence.   
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+from itertools import product
+
+Site_A_Top = input('Enter A-Site Topstrand: ')
+Site_A_Bottom = input('Enter A-Site Bottomstrand: ')
+Site_X_Top = input('Enter X-Site Topstrand: ')
+Site_X_Bottom = input('Enter X-Site Bottomstrand: ')
+Spacer_X_Top = input('Enter Spacer-X Topstrand: ')
+Spacer_X_Bottom = input('Enter Spacer-X Bottomstrand: ')
+print("Custom Sequence Region - 64 variables") 
+Spacer_Y_Top = input('Enter Spacer-Y Topstrand: ')
+Spacer_Y_Bottom = input('Enter Spacer-Y Bottomstrand: ')
+Site_Y_Top = input('Enter Y-Site Topstrand: ')
+Site_Y_Bottom = input('Enter Y-Site Bottomstrand: ')
+Site_B_Top = input('Enter B-Site Topstrand: ')
+Site_B_Bottom= input('Enter B-Site Bottomstrand: ')
+
+
+
+cust = ["".join(x) for x in product('ACGT', repeat=3)]
+fin = []
+for x in cust:
+
+
+    for y in cust:
+        j = 0
+        strand = Site_A_Top + Site_X_Top + Spacer_X_Top + x + Spacer_Y_Top + Site_Y_Top + Site_B_Top + Site_B_Bottom[::-1] + Site_Y_Bottom[::-1] + Spacer_Y_Bottom[::-1] + y[::-1] + Spacer_X_Bottom[::-1] + Site_X_Bottom[::-1] + Site_A_Bottom[::-1]
+        X_Cust_Y_top = Spacer_X_Top + x + Spacer_Y_Top
+        X_Cust_Y_bot = Spacer_Y_Bottom[::-1] + y[::-1] + Spacer_X_Bottom[::-1]
+        K = 5
+        res_5_top = [X_Cust_Y_top[i: j] for i in range(len(X_Cust_Y_top)) for j in range(i + 1, len(X_Cust_Y_top) + 1) if
+                len(X_Cust_Y_top[i:j]) == K]
+        res_5_bot = [X_Cust_Y_bot[i: j] for i in range(len(X_Cust_Y_bot)) for j in range(i + 1, len(X_Cust_Y_bot) + 1) if
+                 len(X_Cust_Y_bot[i:j]) == K]
+        K = 6
+        res_6_top = [X_Cust_Y_top[i: j] for i in range(len(X_Cust_Y_top)) for j in range(i + 1, len(X_Cust_Y_top) + 1) if
+                len(X_Cust_Y_top[i:j]) == K]
+        res_6_bot = [X_Cust_Y_bot[i: j] for i in range(len(X_Cust_Y_bot)) for j in range(i + 1, len(X_Cust_Y_bot) + 1) if
+                     len(X_Cust_Y_bot[i:j]) == K]
+
+        res = res_5_top + res_6_top + res_5_bot + res_6_bot
+
+
+        for z in res:
+            if z == Site_A_Top or z == Site_B_Top or z == Site_Y_Top or z == Site_X_Top or z == Site_A_Bottom[::-1] or z == Site_B_Bottom[::-1] or z == Site_Y_Bottom[::-1] or z == Site_X_Bottom[::-1]:
+                j += 1
+                if j > 0:
+                    if z not in fin:
+                        fin.append(z)
+                break
+
+print('Following are repeated in list')
+print(fin)
